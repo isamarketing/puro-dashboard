@@ -1,1 +1,319 @@
-placeholder
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>PURO · Tablero de lanzamiento</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0c0c0e;
+    --bg-2:#121319;
+    --surface:#15161d;
+    --surface-2:#1b1d26;
+    --line:#262833;
+    --text:#f3f2ee;
+    --muted:#8b8c97;
+    --faint:#5d5e69;
+    --navy:#2f4d7a;
+    --navy-soft:#3b5e92;
+    --gold:#c6a86a;
+    --done:#6fae82;
+    --progress:#d8a657;
+    --todo:#5a5c68;
+    --late:#c75b50;
+    --watch:#d8a657;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:
+      radial-gradient(1100px 600px at 78% -8%, rgba(47,77,122,.20), transparent 60%),
+      radial-gradient(900px 500px at 0% 0%, rgba(198,168,106,.06), transparent 55%),
+      var(--bg);
+    color:var(--text);
+    font-family:'Manrope',system-ui,sans-serif;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+  }
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.035;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .wrap{position:relative;z-index:1;max-width:1180px;margin:0 auto;padding:56px 28px 80px}
+
+  /* Header */
+  header{display:flex;justify-content:space-between;align-items:flex-end;gap:32px;flex-wrap:wrap;padding-bottom:34px;border-bottom:1px solid var(--line)}
+  .brand-block{display:flex;flex-direction:column;gap:10px}
+  .eyebrow{font-size:11px;letter-spacing:.42em;text-transform:uppercase;color:var(--muted);font-weight:600}
+  .wordmark{font-family:'Outfit',sans-serif;font-weight:200;font-size:clamp(56px,11vw,118px);line-height:.82;letter-spacing:.01em;display:flex;align-items:flex-start;gap:.12em}
+  .wordmark sup{font-size:.13em;font-weight:600;letter-spacing:.08em;color:var(--muted);transform:translateY(.5em)}
+  .tagline{color:var(--muted);font-size:14px;font-weight:500;max-width:380px}
+
+  /* readiness ring */
+  .ring-card{display:flex;align-items:center;gap:22px;background:linear-gradient(160deg,var(--surface),var(--bg-2));border:1px solid var(--line);border-radius:18px;padding:22px 26px}
+  .ring{position:relative;width:118px;height:118px;flex-shrink:0}
+  .ring svg{transform:rotate(-90deg)}
+  .ring .val{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .ring .val b{font-family:'Outfit',sans-serif;font-weight:300;font-size:30px;line-height:1}
+  .ring .val span{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-top:3px}
+  .ring-meta{display:flex;flex-direction:column;gap:6px}
+  .ring-meta .ml{font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);font-weight:600}
+  .ring-meta .md{font-family:'Outfit',sans-serif;font-weight:300;font-size:26px}
+  .ring-meta .mc{font-size:12.5px;color:var(--muted)}
+  .ring-meta .mc b{color:var(--text);font-weight:700}
+
+  /* stat strip */
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:30px 0 8px}
+  .stat{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 18px}
+  .stat .n{font-family:'Outfit',sans-serif;font-weight:300;font-size:34px;line-height:1}
+  .stat .l{font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-top:8px}
+  .stat .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:7px;vertical-align:middle}
+
+  .section-h{display:flex;align-items:baseline;justify-content:space-between;margin:46px 0 18px}
+  .section-h h2{font-family:'Outfit',sans-serif;font-weight:400;font-size:20px;letter-spacing:.02em}
+  .section-h .upd{font-size:12px;color:var(--faint)}
+
+  /* blocks */
+  .blocks{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+  .block{background:linear-gradient(170deg,var(--surface),var(--bg-2));border:1px solid var(--line);border-radius:18px;padding:22px 22px 10px;opacity:0;transform:translateY(14px);animation:rise .6s cubic-bezier(.2,.7,.2,1) forwards}
+  .block-top{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:14px}
+  .block-top h3{font-family:'Outfit',sans-serif;font-weight:500;font-size:16.5px;letter-spacing:.01em}
+  .block-pct{font-family:'Outfit',sans-serif;font-weight:300;font-size:24px;color:var(--muted)}
+  .bar{height:5px;border-radius:6px;background:#23252f;overflow:hidden;margin-bottom:16px}
+  .bar > i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,var(--navy-soft),var(--gold));width:0;transition:width 1.1s cubic-bezier(.2,.7,.2,1)}
+  ul.tasks{list-style:none}
+  ul.tasks li{display:flex;align-items:center;gap:12px;padding:11px 0;border-top:1px solid #20222b}
+  ul.tasks li:first-child{border-top:none}
+  .tk-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+  .tk-main{flex:1;min-width:0}
+  .tk-name{font-size:13.6px;font-weight:500;letter-spacing:.005em}
+  .tk-sub{font-size:11.5px;color:var(--muted);margin-top:2px;display:flex;gap:9px;flex-wrap:wrap;align-items:center}
+  .tk-sub .owner{color:var(--faint)}
+  .crit{font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(198,168,106,.45);border-radius:20px;padding:1px 8px;font-weight:600}
+  .tk-pct{font-family:'Outfit',sans-serif;font-weight:300;font-size:15px;color:var(--muted);width:42px;text-align:right;flex-shrink:0}
+
+  .legend{display:flex;gap:20px;flex-wrap:wrap;margin-top:34px;padding-top:22px;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}
+  .legend span{display:inline-flex;align-items:center;gap:8px}
+  footer{margin-top:30px;font-size:11.5px;color:var(--faint);line-height:1.7}
+
+  @keyframes rise{to{opacity:1;transform:none}}
+  @media(max-width:760px){
+    .stats{grid-template-columns:repeat(2,1fr)}
+    .blocks{grid-template-columns:1fr}
+    header{align-items:flex-start}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand-block">
+      <span class="eyebrow">RECSA · Lanzamiento</span>
+      <div class="wordmark" id="wordmark">PURO<sup>®</sup></div>
+      <p class="tagline" id="tagline"></p>
+    </div>
+    <div class="ring-card">
+      <div class="ring">
+        <svg width="118" height="118" viewBox="0 0 118 118">
+          <circle cx="59" cy="59" r="52" fill="none" stroke="#23252f" stroke-width="10"/>
+          <circle id="ringArc" cx="59" cy="59" r="52" fill="none" stroke="url(#g)" stroke-width="10" stroke-linecap="round" stroke-dasharray="326.7" stroke-dashoffset="326.7"/>
+          <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3b5e92"/><stop offset="1" stop-color="#c6a86a"/></linearGradient></defs>
+        </svg>
+        <div class="val"><b id="ringPct">0%</b><span>Avance</span></div>
+      </div>
+      <div class="ring-meta">
+        <span class="ml" id="mLabel">Ready to launch</span>
+        <span class="md" id="mDate">—</span>
+        <span class="mc"><b id="daysLeft">—</b> días restantes</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="stats" id="stats"></div>
+
+  <div class="section-h">
+    <h2>Bloques del lanzamiento</h2>
+    <span class="upd" id="updated"></span>
+  </div>
+  <div class="blocks" id="blocks"></div>
+
+  <div class="legend">
+    <span><i class="tk-dot" style="background:var(--done)"></i> Cerrado</span>
+    <span><i class="tk-dot" style="background:var(--progress)"></i> En progreso</span>
+    <span><i class="tk-dot" style="background:var(--todo)"></i> Por iniciar</span>
+    <span><i class="tk-dot" style="background:var(--late)"></i> Atrasado</span>
+    <span class="crit" style="border-color:rgba(198,168,106,.45)">Crítica</span> ruta crítica
+  </div>
+  <footer>
+    Tablero de seguimiento del lanzamiento de PURO · RECSA. Vista de avance para stakeholders.<br>
+    Datos sincronizados desde el tablero de gestión. Última actualización: <span id="footUpd">—</span>.
+  </footer>
+</div>
+
+<script>
+const STATUS = { done:'var(--done)', progress:'var(--progress)', todo:'var(--todo)' };
+const RISK   = { ok:null, watch:'var(--watch)', late:'var(--late)' };
+const fmt = iso => { if(!iso) return null; const [y,m,d]=iso.split('-'); return d+'/'+m; };
+
+function render(data){
+  document.getElementById('tagline').textContent = data.subtitle || '';
+  document.getElementById('mLabel').textContent = data.milestone_label || 'Ready to launch';
+  const allTasks = data.blocks.flatMap(b=>b.tasks);
+  const overall = Math.round(allTasks.reduce((s,t)=>s+(t.pct||0),0)/allTasks.length);
+
+  // milestone date + days
+  const md = data.milestone_date;
+  if(md){
+    const [y,m,d]=md.split('-');
+    document.getElementById('mDate').textContent = d+'/'+m+'/'+y;
+    const diff = Math.ceil((new Date(md) - new Date()) / 86400000);
+    document.getElementById('daysLeft').textContent = diff>=0?diff:0;
+  }
+  document.getElementById('updated').textContent = 'Actualizado '+ (data.updated_at? fmt(data.updated_at)+'/'+data.updated_at.split('-')[0]:'');
+  document.getElementById('footUpd').textContent = data.updated_at || '—';
+
+  // ring
+  const C = 2*Math.PI*52;
+  const arc = document.getElementById('ringArc');
+  document.getElementById('ringPct').textContent = overall+'%';
+  setTimeout(()=>{ arc.style.transition='stroke-dashoffset 1.4s cubic-bezier(.2,.7,.2,1)'; arc.style.strokeDashoffset = C*(1-overall/100); }, 200);
+
+  // stats
+  const done = allTasks.filter(t=>t.status==='done').length;
+  const prog = allTasks.filter(t=>t.status==='progress').length;
+  const todo = allTasks.filter(t=>t.status==='todo').length;
+  const late = allTasks.filter(t=>t.risk==='late').length;
+  const stats = [
+    {n:done, l:'Cerradas', c:'var(--done)'},
+    {n:prog, l:'En progreso', c:'var(--progress)'},
+    {n:todo, l:'Por iniciar', c:'var(--todo)'},
+    {n:late, l:'Atrasadas', c:'var(--late)'}
+  ];
+  document.getElementById('stats').innerHTML = stats.map(s=>
+    `<div class="stat"><div class="n"><span class="dot" style="background:${s.c}"></span>${s.n}</div><div class="l">${s.l}</div></div>`
+  ).join('');
+
+  // blocks
+  const elBlocks = document.getElementById('blocks');
+  elBlocks.innerHTML = data.blocks.map((b,i)=>{
+    const pct = Math.round(b.tasks.reduce((s,t)=>s+(t.pct||0),0)/b.tasks.length);
+    const rows = b.tasks.map(t=>{
+      const color = t.risk==='late' ? 'var(--late)' : STATUS[t.status];
+      const dates = (t.start||t.end) ? `${fmt(t.start)||''}${t.end?' → '+fmt(t.end):''}` : '';
+      const crit = t.priority==='Crítica' ? `<span class="crit">Crítica</span>` : '';
+      const owner = t.owner ? `<span class="owner">${t.owner}</span>` : '';
+      const sub = [dates, owner].filter(Boolean).join(' · ');
+      return `<li>
+        <span class="tk-dot" style="background:${color}"></span>
+        <span class="tk-main">
+          <div class="tk-name">${t.task} ${crit}</div>
+          <div class="tk-sub">${sub}</div>
+        </span>
+        <span class="tk-pct">${t.pct}%</span>
+      </li>`;
+    }).join('');
+    return `<section class="block" style="animation-delay:${i*70}ms">
+      <div class="block-top"><h3>${b.name}</h3><span class="block-pct">${pct}%</span></div>
+      <div class="bar"><i data-w="${pct}"></i></div>
+      <ul class="tasks">${rows}</ul>
+    </section>`;
+  }).join('');
+
+  // animate bars after paint
+  requestAnimationFrame(()=>setTimeout(()=>{
+    document.querySelectorAll('.bar > i').forEach(b=>b.style.width=b.dataset.w+'%');
+  },350));
+}
+
+const DATA = {
+  "brand": "PURO",
+  "subtitle": "Membrana líquida impermeable · 100% poliuretano premium",
+  "milestone_label": "Ready to launch",
+  "milestone_date": "2026-07-31",
+  "updated_at": "2026-06-02",
+  "blocks": [
+    {
+      "name": "Base estratégica",
+      "tasks": [
+        { "task": "Brief del proyecto", "status": "done", "pct": 100, "risk": "ok" },
+        { "task": "Investigación & insights", "status": "done", "pct": 100, "risk": "ok" },
+        { "task": "Definiciones estratégicas", "status": "done", "pct": 100, "risk": "ok" }
+      ]
+    },
+    {
+      "name": "Desarrollo de producto",
+      "tasks": [
+        { "task": "Validación fórmula base · Univ. de La Plata", "status": "progress", "pct": 40, "start": "2026-06-02", "end": "2026-06-05", "risk": "ok", "owner": "Claudio", "priority": "Crítica" },
+        { "task": "Definición lista de pruebas / beneficios", "status": "progress", "pct": 25, "start": "2026-06-05", "end": "2026-06-13", "risk": "ok", "owner": "Claudio" },
+        { "task": "Desarrollo de línea clima", "status": "progress", "pct": 10, "start": "2026-06-09", "end": "2026-07-11", "risk": "ok", "owner": "Comité" },
+        { "task": "Desarrollo de línea superficie", "status": "progress", "pct": 10, "start": "2026-06-09", "end": "2026-07-11", "risk": "ok", "owner": "Comité" },
+        { "task": "Desarrollo de colores", "status": "progress", "pct": 10, "start": "2026-06-09", "end": "2026-07-11", "risk": "ok", "owner": "Comité" },
+        { "task": "Definición de certificaciones", "status": "progress", "pct": 10, "start": "2026-06-16", "end": "2026-07-18", "risk": "ok", "owner": "Comité" },
+        { "task": "Definición de garantía", "status": "progress", "pct": 10, "start": "2026-06-16", "end": "2026-07-18", "risk": "ok", "owner": "Comité" },
+        { "task": "Fichas técnicas comparativas vs SIKA", "status": "todo", "pct": 0, "start": "2026-07-07", "end": "2026-07-18", "risk": "ok", "owner": "Claudio" },
+        { "task": "Primeras partidas de producción", "status": "todo", "pct": 0, "start": "2026-07-14", "end": "2026-07-28", "risk": "ok", "owner": "Claudio · Martina" }
+      ]
+    },
+    {
+      "name": "Marca & packaging",
+      "tasks": [
+        { "task": "Identidad y arquitectura de marca PURO", "status": "done", "pct": 100, "risk": "ok", "owner": "Julia · agencia" },
+        { "task": "Posicionamiento de marca PURO", "status": "progress", "pct": 10, "start": "2026-06-09", "end": "2026-06-20", "risk": "ok", "owner": "Julia · agencia" },
+        { "task": "Nombres de presentaciones (clima × superficie)", "status": "todo", "pct": 0, "start": "2026-06-09", "end": "2026-06-20", "risk": "ok", "owner": "Julia" },
+        { "task": "Registro legal de marca (AR · UY · PY)", "status": "todo", "pct": 0, "start": "2026-06-09", "end": "2026-07-31", "risk": "ok", "owner": "Gabriel · legal", "priority": "Crítica" },
+        { "task": "Desarrollo de packaging 25 kg con proveedor", "status": "progress", "pct": 10, "start": "2026-06-09", "end": "2026-07-18", "risk": "ok", "owner": "Julia · proveedor" },
+        { "task": "Legales / regulatorios en etiqueta (AR · UY · PY)", "status": "todo", "pct": 0, "start": "2026-06-23", "end": "2026-07-18", "risk": "ok", "owner": "Julia · legal" }
+      ]
+    },
+    {
+      "name": "Comunicación",
+      "tasks": [
+        { "task": "Propuesta de valor & mensajes", "status": "todo", "pct": 0, "start": "2026-06-09", "end": "2026-06-20", "risk": "ok", "owner": "Lucia · Julia" },
+        { "task": "Concepto creativo", "status": "todo", "pct": 0, "start": "2026-06-09", "end": "2026-06-20", "risk": "ok", "owner": "Agencia" },
+        { "task": "Plan de medios", "status": "todo", "pct": 0, "start": "2026-06-16", "end": "2026-06-30", "risk": "ok", "owner": "Gaby · agencia" },
+        { "task": "Roadmap de comunicación", "status": "todo", "pct": 0, "start": "2026-06-16", "end": "2026-06-27", "risk": "ok", "owner": "Gaby" },
+        { "task": "Desarrollo de piezas", "status": "todo", "pct": 0, "start": "2026-06-23", "end": "2026-07-11", "risk": "ok", "owner": "Agencia" },
+        { "task": "Materiales de comunicación", "status": "todo", "pct": 0, "start": "2026-06-23", "end": "2026-07-18", "risk": "ok", "owner": "Julia · agencia" },
+        { "task": "Digital assets (web, redes, kit, catálogo)", "status": "todo", "pct": 0, "start": "2026-06-23", "end": "2026-07-25", "risk": "ok", "owner": "Julia · agencia" },
+        { "task": "Producción y QA visual", "status": "todo", "pct": 0, "start": "2026-07-07", "end": "2026-07-18", "risk": "ok", "owner": "Agencia" }
+      ]
+    },
+    {
+      "name": "Equipo comercial",
+      "tasks": [
+        { "task": "Estructura y perfil del vendedor", "status": "todo", "pct": 0, "start": "2026-06-09", "end": "2026-06-20", "risk": "ok", "owner": "Lucia" },
+        { "task": "Incorporación del vendedor", "status": "todo", "pct": 0, "start": "2026-06-23", "end": "2026-07-18", "risk": "ok", "owner": "Lucia" },
+        { "task": "Lista de prospectos", "status": "todo", "pct": 0, "start": "2026-06-16", "end": "2026-07-04", "risk": "ok", "owner": "Lucia" },
+        { "task": "Embudo de ventas", "status": "todo", "pct": 0, "start": "2026-06-16", "end": "2026-06-30", "risk": "ok", "owner": "Lucia" },
+        { "task": "Identificación de retail / canal", "status": "todo", "pct": 0, "start": "2026-06-16", "end": "2026-07-04", "risk": "ok", "owner": "Lucia" },
+        { "task": "Materiales comerciales", "status": "todo", "pct": 0, "start": "2026-06-23", "end": "2026-07-18", "risk": "ok", "owner": "Julia · Lucia" },
+        { "task": "Pricing y condiciones comerciales", "status": "todo", "pct": 0, "start": "2026-07-07", "end": "2026-07-18", "risk": "ok", "owner": "Lucia" }
+      ]
+    },
+    {
+      "name": "Business case",
+      "tasks": [
+        { "task": "Plan comercial & business case", "status": "done", "pct": 100, "risk": "ok" },
+        { "task": "Economics actualizados", "status": "todo", "pct": 0, "start": "2026-06-09", "end": "2026-06-20", "risk": "ok", "owner": "Gabriel · Lucia" },
+        { "task": "Definición de alcance de SKUs", "status": "todo", "pct": 0, "start": "2026-06-16", "end": "2026-06-27", "risk": "ok", "owner": "Gabriel · Lucia", "priority": "Crítica" }
+      ]
+    },
+    {
+      "name": "Lanzamiento & Club PURO",
+      "tasks": [
+        { "task": "Plan de lanzamiento y activaciones", "status": "todo", "pct": 0, "start": "2026-07-07", "end": "2026-07-25", "risk": "ok", "owner": "Martina · Gabriel" },
+        { "task": "Diseño Club PURO (3 niveles)", "status": "todo", "pct": 0, "start": "2026-06-16", "end": "2026-07-11", "risk": "ok", "owner": "Lucia · Martina" },
+        { "task": "Certificación al colocador con aval de universidad", "status": "todo", "pct": 0, "start": "2026-06-16", "end": "2026-07-25", "risk": "ok", "owner": "Lucia · Claudio" },
+        { "task": "Dashboard de seguimiento", "status": "progress", "pct": 30, "start": "2026-07-21", "end": "2026-07-31", "risk": "ok", "owner": "Gabriel" }
+      ]
+    }
+  ]
+};
+render(DATA);
+</script>
+</body>
+</html>
