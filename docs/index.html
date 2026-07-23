@@ -52,6 +52,8 @@
   .wordmark{font-family:'Outfit',sans-serif;font-weight:200;font-size:clamp(56px,11vw,118px);line-height:.82;letter-spacing:.01em;display:flex;align-items:flex-start;gap:.12em}
   .wordmark sup{font-size:.13em;font-weight:600;letter-spacing:.08em;color:var(--muted);transform:translateY(.5em)}
   .tagline{color:var(--muted);font-size:14px;font-weight:500;max-width:380px}
+  .header-right{display:flex;flex-direction:column;align-items:flex-end;gap:12px}
+  .version-tag{font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);font-weight:600}
 
   /* readiness ring */
   .ring-card{display:flex;align-items:center;gap:22px;background:linear-gradient(160deg,var(--surface),var(--bg-2));border:1px solid var(--line);border-radius:18px;padding:22px 26px}
@@ -116,6 +118,8 @@
       <div class="wordmark" id="wordmark">PURO<sup>®</sup></div>
       <p class="tagline" id="tagline"></p>
     </div>
+    <div class="header-right">
+    <span class="version-tag">Versión · <span id="versionDate">—</span></span>
     <div class="ring-card">
       <div class="ring">
         <svg width="118" height="118" viewBox="0 0 118 118">
@@ -130,6 +134,7 @@
         <span class="md" id="mDate">—</span>
         <span class="mc"><b id="daysLeft">—</b> días restantes</span>
       </div>
+    </div>
     </div>
   </header>
 
@@ -175,6 +180,9 @@ function render(data){
   }
   document.getElementById('updated').textContent = 'Actualizado '+ (data.updated_at? fmt(data.updated_at)+'/'+data.updated_at.split('-')[0]:'');
   document.getElementById('footUpd').textContent = data.updated_at || '—';
+  const MESES=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  const vd=document.getElementById('versionDate');
+  if(vd && data.updated_at){ const [vy,vm,vdd]=data.updated_at.split('-'); vd.textContent=parseInt(vdd,10)+' '+MESES[parseInt(vm,10)-1]; }
 
   // ring
   const C = 2*Math.PI*52;
@@ -231,7 +239,7 @@ function render(data){
 
 const DATA = {
   "brand": "PURO",
-  "subtitle": "Membrana líquida impermeable · 100% poliuretano premium",
+  "subtitle": "No es magia, es tecnología.",
   "milestone_label": "Ready to launch",
   "milestone_date": "2026-08-31",
   "updated_at": "2026-07-23",
