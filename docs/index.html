@@ -233,9 +233,9 @@ function render(data){
       return `<li>
         <span class="tk-dot" style="background:${color}"></span>
         <span class="tk-main">
-          <div class="tk-name">${t.task} ${crit}</div>
+          <div class="tk-name"${t.alert?' style="color:var(--late)"':''}>${t.task} ${crit}</div>
           <div class="tk-sub">${sub}</div>
-          ${t.note ? `<div class="tk-sub tk-note">Pendiente: ${t.note}</div>` : ''}
+          ${t.note ? `<div class="tk-sub tk-note"${t.alert?' style="color:var(--late)"':''}>Pendiente: ${t.note}</div>` : ''}
         </span>
         <span class="tk-pct">${t.pct}%</span>
       </li>`;
@@ -398,7 +398,8 @@ const DATA = {
           "risk": "ok",
           "owner": "Julia · proveedor",
           "end": "2026-10-26",
-          "note": "enviar el zip al proveedor"
+          "note": "enviar el zip al proveedor",
+          "alert": true
         },
         {
           "task": "Legales / regulatorios en etiqueta (AR)",
@@ -482,7 +483,8 @@ const DATA = {
           "end": "2026-10-26",
           "risk": "ok",
           "owner": "Julia · agencia",
-          "note": "aprobar presupuesto de desarrollo"
+          "note": "aprobar presupuesto de desarrollo",
+          "alert": true
         },
         {
           "task": "Redes sociales",
@@ -491,7 +493,8 @@ const DATA = {
           "end": "2026-10-26",
           "risk": "ok",
           "owner": "Julia · agencia",
-          "note": "aprobar presupuesto de mantenimiento"
+          "note": "aprobar presupuesto de mantenimiento",
+          "alert": true
         },
         {
           "task": "Producción y QA visual",
@@ -506,7 +509,8 @@ const DATA = {
           "pct": 80,
           "end": "2026-11-01",
           "risk": "ok",
-          "owner": "Agencia · cliente"
+          "owner": "Agencia · cliente",
+          "alert": true
         }
       ]
     },
