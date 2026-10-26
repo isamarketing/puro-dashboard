@@ -111,6 +111,7 @@
     .blocks{grid-template-columns:1fr}
     header{align-items:flex-start}
   }
+.tk-note{font-style:italic;opacity:.85}
 </style>
 </head>
 <body>
@@ -234,6 +235,7 @@ function render(data){
         <span class="tk-main">
           <div class="tk-name">${t.task} ${crit}</div>
           <div class="tk-sub">${sub}</div>
+          ${t.note ? `<div class="tk-sub tk-note">Pendiente: ${t.note}</div>` : ''}
         </span>
         <span class="tk-pct">${t.pct}%</span>
       </li>`;
@@ -391,10 +393,12 @@ const DATA = {
         },
         {
           "task": "Desarrollo de packaging 20 kg con proveedor",
-          "status": "done",
-          "pct": 100,
+          "status": "progress",
+          "pct": 90,
           "risk": "ok",
-          "owner": "Julia · proveedor"
+          "owner": "Julia · proveedor",
+          "end": "2026-10-26",
+          "note": "enviar el zip al proveedor"
         },
         {
           "task": "Legales / regulatorios en etiqueta (AR)",
@@ -465,11 +469,29 @@ const DATA = {
           "owner": "Julia · agencia"
         },
         {
-          "task": "Digital assets (web, redes, kit, catálogo)",
+          "task": "Digital assets (kit, catálogo)",
           "status": "done",
           "pct": 100,
           "risk": "ok",
           "owner": "Julia · agencia"
+        },
+        {
+          "task": "Web",
+          "status": "progress",
+          "pct": 80,
+          "end": "2026-10-26",
+          "risk": "ok",
+          "owner": "Julia · agencia",
+          "note": "aprobar presupuesto de desarrollo"
+        },
+        {
+          "task": "Redes sociales",
+          "status": "progress",
+          "pct": 80,
+          "end": "2026-10-26",
+          "risk": "ok",
+          "owner": "Julia · agencia",
+          "note": "aprobar presupuesto de mantenimiento"
         },
         {
           "task": "Producción y QA visual",
